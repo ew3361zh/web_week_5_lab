@@ -1,0 +1,69 @@
+<html>
+    <head>
+
+    </head>
+
+    <body>
+
+        <div>
+            <h1>GitHub Repository Programming Language Analysis</h1>
+
+            <label for="github-username">Enter GitHub Username</label>
+            <input id="github-username">
+            <button id="analyze">Analyze</button>
+                
+        </div>
+        <div id="output"> 
+        <!-- new paragraphs of github data go in this newly added div element with an id referenced in the javascript-->
+        </div>
+    
+
+        <script>
+       
+            let analyzeButton = document.querySelector('#analyze')
+            let usernameInput = document.querySelector('#github-username')
+            let outputParagraph = document.querySelector('#output') //added div to hold new paragraphs of summary data
+            
+            document.addEventListener('keyup', function() { //added enter for click option
+                if (event.keyCode == 13) {
+                    analyzeButton.click()
+                }
+            })
+            analyzeButton.addEventListener('click', function() {
+                outputParagraph.innerHTML = ''
+                let username = usernameInput.value
+                let url = `https://api.github.com/users/${username}/repos`
+                fetch(url)   // make request to URL
+                .then(response => response.json())  // extract the JSON from the response 
+                .then(githubJson => {   
+                    console.log(githubJson)   // JSON available here
+                    let languageCount = {} //empty language counting object
+                    githubJson.forEach ( repo => { //changed githubJson as the forEach array to loop through
+                        let language = repo.language // initialize language variable
+                        if (language in languageCount) {//if language already exists in languageCount object, add a count to it's value
+                            languageCount[language]++
+                        }  else if (language == null) { //code to ignore the 'null' language property
+                            return //return to break from if logic statement if language is null
+                        } else { 
+                            languageCount[language] = 1 //if this is reached it means the language is not yet in the language counter object so this initializes
+                        }                               //the languageCount object with the language name and the count starting at 1
+                    })
+                    
+                    for (language in languageCount) { // for loop through the languageCount object
+                        let paragraph = document.createElement('p') // initialize new paragraph html element to store language count property and value
+                        paragraph.innerHTML = `${language} count ${languageCount[language]}` //template string to give structure and property/value references to fill out for new paragraphs
+                        outputParagraph.appendChild(paragraph) //add the new paragraphs to show up in the designated div space
+                    }
+                    
+                })
+                .catch(error => {    // handle errors that occur when requesting data or processing the response
+                    console.log(error)
+                    alert('Error fetching data from GitHub')
+                })
+            })
+        
+
+
+        </script>
+    </body>
+</html>
