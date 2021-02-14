@@ -13,9 +13,14 @@
             <button id="analyze">Analyze</button>
                 
         </div>
+        <br>
+        <div id="bio">
+
+        </div>
         <div id="output"> 
         <!-- new paragraphs of github data go in this newly added div element with an id referenced in the javascript-->
         </div>
+        <br>
         <div id="avatar">
             <!-- user avi will get appended here -->
         </div>
@@ -26,6 +31,7 @@
             let usernameInput = document.querySelector('#github-username')
             let outputParagraph = document.querySelector('#output') //added div to hold new paragraphs of summary data
             let userImage = document.querySelector('#avatar') //add div element after source code count
+            let bioInfo = document.querySelector('#bio') //add bio info
 
             document.addEventListener('keyup', function() { //added enter for click option
                 if (event.keyCode == 13) {
@@ -85,6 +91,12 @@
                     let img = document.createElement('img') //create an image similar to how we created new paragraphs for the code counts
                     img.src = aviURL //set the source of the image to the avi url
                     userImage.appendChild(img); //append the image to the new div created in the html
+                    
+                    //bio info - define info to show up in bio and get same way as aviURL above
+                    let name = githubJson.name
+                    let company = githubJson.company
+                    let bio = githubJson.bio
+                    bioInfo.innerHTML = `Name: ${name}; Company: ${company}; Bio: ${bio}` //put bio info into template string
                 })
                 
                 .catch(error => {    // handle errors that occur when requesting data or processing the response
