@@ -16,27 +16,31 @@
         <div id="output"> 
         <!-- new paragraphs of github data go in this newly added div element with an id referenced in the javascript-->
         </div>
-    
+        <div id="avatar">
+            <!-- user avi will get appended here -->
+        </div>
 
         <script>
        
             let analyzeButton = document.querySelector('#analyze')
             let usernameInput = document.querySelector('#github-username')
             let outputParagraph = document.querySelector('#output') //added div to hold new paragraphs of summary data
-            
+            let userImage = document.querySelector('#avatar') //add div element after source code count
+
             document.addEventListener('keyup', function() { //added enter for click option
                 if (event.keyCode == 13) {
                     analyzeButton.click()
                 }
             })
             analyzeButton.addEventListener('click', function() {
-                outputParagraph.innerHTML = ''
+                outputParagraph.innerHTML = '' //clear the previous search's results
+                userImage.innerHTML = '' //clear previous search avi
                 let username = usernameInput.value
                 let url = `https://api.github.com/users/${username}/repos`
                 fetch(url)   // make request to URL
                 .then(response => response.json())  // extract the JSON from the response 
                 .then(githubJson => {   
-                    console.log(githubJson)   // JSON available here
+                    // console.log(githubJson)   // JSON available here
                     let languageCount = {} //empty language counting object
                     githubJson.forEach ( repo => { //changed githubJson as the forEach array to loop through
                         let language = repo.language // initialize language variable
@@ -72,6 +76,17 @@
                     // }
                     
                 })
+                //trying to get user avatar from github profile page
+                let urlPhoto = `https://api.github.com/users/${username}`
+                fetch(urlPhoto) //using same code as from above for getting the languages
+                .then(response => response.json())  // extract the JSON from the response 
+                .then(githubJson => {
+                    let aviURL = githubJson.avatar_url //get the avi url from the object
+                    let img = document.createElement('img') //create an image similar to how we created new paragraphs for the code counts
+                    img.src = aviURL //set the source of the image to the avi url
+                    userImage.appendChild(img); //append the image to the new div created in the html
+                })
+                
                 .catch(error => {    // handle errors that occur when requesting data or processing the response
                     console.log(error)
                     alert('Error fetching data from GitHub')
