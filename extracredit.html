@@ -48,12 +48,28 @@
                             languageCount[language] = 1 //if this is reached it means the language is not yet in the language counter object so this initializes
                         }                               //the languageCount object with the language name and the count starting at 1
                     })
-                    
-                    for (language in languageCount) { // for loop through the languageCount object
-                        let paragraph = document.createElement('p') // initialize new paragraph html element to store language count property and value
-                        paragraph.innerHTML = `${language} count ${languageCount[language]}` //template string to give structure and property/value references to fill out for new paragraphs
-                        outputParagraph.appendChild(paragraph) //add the new paragraphs to show up in the designated div space
+
+                    let sortedArray = [] //create array from which we can eventually sort the data
+                    for (let lang in languageCount) { //use for loop to pull property and value out of object
+                        sortedArray.push([lang, languageCount[lang]]) //insert as pairs array elements into new array
                     }
+
+                    sortedArray.sort(function(a,b) { //use sorting function
+                        return b[1] - a[1]; //reverse order sorting from largest value to smallest value
+                    });
+                    
+                    sortedArray.forEach  (function (langy) { //use sorted array to produce sorted list of languages by usage
+                        let paragraph = document.createElement('p') // initialize new paragraph html element to store language count property and value
+                        paragraph.innerHTML = `${langy[0]} count: ${langy[1]}` //template string to give structure and property/value references to fill out for new paragraphs
+                        outputParagraph.appendChild(paragraph) //add the new paragraphs to show up in the designated div space
+                    })
+
+                    //old code for unsorted list of codes
+                    // for (language in languageCount) { // for loop through the languageCount object
+                    //     let paragraph = document.createElement('p') // initialize new paragraph html element to store language count property and value
+                    //     paragraph.innerHTML = `${language} count: ${languageCount[language]}` //template string to give structure and property/value references to fill out for new paragraphs
+                    //     outputParagraph.appendChild(paragraph) //add the new paragraphs to show up in the designated div space
+                    // }
                     
                 })
                 .catch(error => {    // handle errors that occur when requesting data or processing the response
